@@ -23,49 +23,38 @@ import HotelBookingForm from "../pages/Hotel/HotelBookingForm";
 import FlightBookingForm from "../pages/Flight/FlightBooking";
 import PlaceBookingForm from "../pages/Place/PlaceBookingForm";
 import PublicChat from "../chat/PublicChat";
-
 function Routing() {
   return (
     <Routes>
       {/* Auth routes */}
       <Route path="/sign-up/*" element={<SignUpPage />} />
       <Route path="/sign-in/*" element={<Login />} />
-
-      {/* Home route */}
-      <Route
-        path="/"
-        element={
-          <>
-            <SignedIn>
-              <Home />
-            </SignedIn>
-            <SignedOut>
-              <RedirectToSignIn />
-            </SignedOut>
-          </>
-        }
-      />
-
-      {/* All other routes with MainLayout */}
-      <Route
-        element={
-          <SignedIn>
-            <MainLayout />
-          </SignedIn>
-        }
-      >
-        {/* Nested routes */}
+      <Route path="/" element={<Home />} />
+      {/* Public Routes - accessible without login */}
+      <Route element={<MainLayout />}>
+       
         <Route path="hotels" element={<HotelSearch />} />
         <Route path="flight" element={<Flight />} />
         <Route path="hotels/:id" element={<HotelDetails />} />
-        <Route path="h-booking" element={<HotelBookingForm />} />
         <Route path="places" element={<SearchCity />} />
         <Route path="placecard" element={<PlaceCard />} />
         <Route path="place/:fsq_id" element={<PlaceDetails />} />
+      </Route>
+
+      {/* Protected Routes - require login */}
+      <Route
+        
+          element={
+            <SignedIn>
+              <MainLayout />
+            </SignedIn>
+        }
+      >
         <Route path="profile" element={<UserProfile />} />
-        <Route path="f-booking" element={<FlightBookingForm/>}/>
-        <Route path="p-booking" element={<PlaceBookingForm/>}/>
-        <Route path="chat" element={<PublicChat/>}/>
+        <Route path="chat" element={<PublicChat />} />
+        <Route path="h-booking" element={<HotelBookingForm />} />
+        <Route path="f-booking" element={<FlightBookingForm />} />
+        <Route path="p-booking" element={<PlaceBookingForm />} />
       </Route>
 
       {/* Fallback */}
@@ -73,5 +62,6 @@ function Routing() {
     </Routes>
   );
 }
+
 
 export default Routing;

@@ -29,12 +29,14 @@ function PublicChat() {
   if (!user) return <div>Please sign in to chat</div>;
 
   const username = user.username || user.firstName || user.emailAddresses[0].emailAddress;
-
+  const id=user?.id||"unknown"
+  const profile=user?.imageUrl||''
+  console.log(user)
   return (
     <div className="max-w-xl mx-auto mt-10">
       <h1 className="text-2xl font-bold mb-4 text-center">Public Chat</h1>
       <ChatBox />
-      <MessageInput sender={username} />
+      <MessageInput sender={username} senderId={id} profilePic={profile}/>
     </div>
   );
 }

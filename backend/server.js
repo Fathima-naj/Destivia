@@ -17,6 +17,8 @@ import paymentroute from './routes/paymentRoute.js';
 import popRoute from './routes/popularRoute.js';
 import bookRouter from './routes/bookingRoute.js';
 import chatSocket from './socket/chatSocket.js';
+import chatRouter from './routes/chatRoute.js';
+import userRoute from './routes/usersRoute.js';
 dotenv.config()
 const app = express()
 
@@ -53,11 +55,13 @@ app.use("/api/places",placeRoute)
 app.use('/api/clerk', clerkWebhookRoutes);
 app.use('/api/payment',paymentroute)
 app.use('/api/book',bookRouter)
+app.use('/api/chat',chatRouter)
+app.use('/api/user',userRoute)
 const PORT = process.env.PORT || 5001  
 
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`server running at port ${PORT}`)
 })

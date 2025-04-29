@@ -1,4 +1,4 @@
-import { Server } from "socket.io";
+
 import Message from "../model/messageModel.js";
 
 const chatSocket = (io) => {
@@ -15,9 +15,16 @@ const chatSocket = (io) => {
     socket.on("send_message", async (data) => {
       try {
         console.log("Received message data:", data);
+    
+        // ✅ Destructure senderId from the data object
+        const { senderId, text, sender,profilePic, imageUrl } = data;
+    
         const newMessage = new Message({
-          text: data.text,
-          sender: data.sender,
+          senderId,
+          text,
+          sender,
+          profilePic,
+          imageUrl: imageUrl || "",
           timestamp: new Date(),
         });
     
@@ -30,6 +37,7 @@ const chatSocket = (io) => {
         socket.emit("message_error", { error: "Failed to save message" });
       }
     });
+    
     
 
     socket.on("disconnect", () => {
