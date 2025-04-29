@@ -26,7 +26,7 @@ import React from 'react'
             />
             <button
               onClick={handleSearch}
-              className="w-full bg-yellow-600 hover:bg-indigo-700 text-white font-semibold py-3 cursor-pointer rounded-lg transition shadow-lg"
+              className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-3 cursor-pointer rounded-lg transition shadow-lg"
             >
               Search
             </button>

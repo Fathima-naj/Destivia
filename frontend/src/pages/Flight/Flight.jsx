@@ -34,15 +34,15 @@ const FlightSearchList = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="relative bg-[url('./assets/flight.jpg')] bg-cover bg-center  h-[300px] sm:h-[400px]">
+      <div className="relative bg-[url('https://flytoct.com/wp-content/uploads/2024/01/is-the-boeing-737-max-safe.jpg')] bg-cover bg-center  h-[300px] sm:h-[400px]">
         <div className=" inset-0 bg-black/30"></div>
         <div className="absolute ">
           
-          <div className="flex flex-col  py-20 items-center justify-center h-full text-white text-center px-4">
+          <div className="flex flex-col  py-20 items-center justify-center h-full text-white text-center px-6">
             <h1 className="text-3xl sm:text-5xl font-bold">Not sure where to go ?</h1>
-            <p className="text-sm sm:text-lg mt-2"> Explore popular flights loved by travelers!</p>
+            <p className="text-sm sm:text-lg mt-2 text-black"> Explore popular flights loved by travelers!</p>
           </div>
-          <div className="max-w-5xl mx-auto px-4">
+          <div className="max-w-5xl mx-72 px-4">
          
             
             <FlightSearchForm

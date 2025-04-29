@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useAuth } from "@clerk/clerk-react";
 import { useDispatch, useSelector } from "react-redux";
-import { createBookingOrder } from "../../slice/bookingSlice";
+import { createBookingOrder ,clearBookingState} from "../../slice/bookingSlice";
 import axiosInstance from "../../api/axiosInstance";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-
+import { useNavigate } from "react-router-dom";
 
 const HotelBookingForm = () => {
   const { getToken } = useAuth();
@@ -20,6 +20,21 @@ const HotelBookingForm = () => {
 
   const [selectedRoomType, setSelectedRoomType] = useState("single");
   const [availableCount, setAvailableCount] = useState(0);
+
+  const navigate=useNavigate()
+
+  useEffect(() => {
+        if (!hotel) {
+          toast.error("No place details found");
+          navigate('/places');
+          return;
+        }
+      }, [hotel, navigate]);
+
+        useEffect(() => {
+    dispatch(clearBookingState());
+    return () => dispatch(clearBookingState());
+  }, [dispatch]);
 
   const initialValues = {
     name: "",
@@ -69,11 +84,13 @@ const HotelBookingForm = () => {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
-  const handleBooking = async (values) => {
+  const handleBooking = async (values,{setSubmitting}) => {
+   try{
+
     const token = await getToken();
     const nights = calculateNights(checkIn, checkOut);
     const totalAmount = hotel.priceFrom * nights * values.rooms;
-
+    console.log(totalAmount)
     const availableRoomCount = getAvailableRoomsCount(values.roomType);
      console.log('room count',availableRoomCount);
      
@@ -129,7 +146,13 @@ const HotelBookingForm = () => {
       },
     };
 
-    dispatch(createBookingOrder({ type: "hotel", bookingData, token }));
+   await dispatch(createBookingOrder({ type: "hotel", bookingData, token }));
+    } catch (error) {
+             console.error("Booking creation failed:", error);
+             toast.error(error.message || "Failed to create booking");
+           } finally {
+             setSubmitting(false);
+           }
   };
 
   useEffect(() => {
@@ -142,8 +165,8 @@ const HotelBookingForm = () => {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: order.amount,
         currency: "USD",
-        name: "Travel Booking",
-        description: "Destination Booking Payment",
+        name: "Destivia Travels",
+        description: `Booking for ${hotel.hotelName}`,
         order_id: order.orderId,
         handler: async function (response) {
           try {
@@ -154,7 +177,7 @@ const HotelBookingForm = () => {
                 razorpayPaymentId: response.razorpay_payment_id,
                 razorpaySignature: response.razorpay_signature,
                 bookingId: order.bookingId,
-                type: "place",
+                type: "hotel",
               },
               {
                 headers: {
@@ -164,6 +187,8 @@ const HotelBookingForm = () => {
               }
             );
             toast.success("Payment successful 🎉");
+            dispatch(clearBookingState());
+            navigate('/hotels')
           } catch (err) {
             console.error("Payment verification failed:", err);
             toast.error("Payment verification failed ❌");

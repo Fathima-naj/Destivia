@@ -48,6 +48,7 @@ function Input({ showResultsInHero = false }) {
         alert("Please enter all required fields!");
         return;
       }
+      dispatch(setActiveTab("flights")); // Add this line
       dispatch(fetchFlights({ from: departure, to: arrival, date, passengers, classType }));
     } 
     else if (activeTab === "hotels") {
@@ -127,8 +128,8 @@ function Input({ showResultsInHero = false }) {
           onClick={() => setActiveTab("hotels")}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
             activeTab === "hotels"
-              ? "bg-blue-500 text-white"
-              : "hover:bg-gray-100"
+              ? "bg-yellow-600 text-white"
+              : "hover:bg-yellow-900/25"
           }`}
         >
           <RiHotelFill size={24} />
@@ -139,8 +140,8 @@ function Input({ showResultsInHero = false }) {
           onClick={() => setActiveTab("flights")}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
             activeTab === "flights"
-              ? "bg-blue-500 text-white"
-              : "hover:bg-gray-100"
+              ? "bg-yellow-600 text-white"
+              : "hover:bg-yellow-900/25"
           }`}
         >
           <GiCommercialAirplane size={23} />
@@ -151,8 +152,8 @@ function Input({ showResultsInHero = false }) {
           onClick={() => setActiveTab("attractions")}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
             activeTab === "attractions"
-              ? "bg-blue-500 text-white"
-              : "hover:bg-gray-100"
+                ? "bg-yellow-600 text-white"
+              : "hover:bg-yellow-900/25"
           }`}
         >
           <FerrisWheel size={24} />

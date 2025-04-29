@@ -1,5 +1,7 @@
 import { createRazorpayOrderAndSave } from "../service/paymentService.js";
-
+import asyncHandler from "../utilis/asyncHandler.js";
+import { getBookingHistory } from "../service/paymentService.js";
+import User from "../model/userModel.js"; 
 export const createBookingOrder = async (req, res) => {
   try {
     const { type, bookingData } = req.body;
@@ -29,8 +31,6 @@ export const createBookingOrder = async (req, res) => {
     });
   }
 };
-
-import asyncHandler from "../utilis/asyncHandler.js";
 import { verifyRazorpayPaymentAndConfirmBooking } from "../service/paymentService.js";
 
 export const confirmBookingPayment = asyncHandler(async (req, res) => {
@@ -52,3 +52,27 @@ export const confirmBookingPayment = asyncHandler(async (req, res) => {
 });
 
 
+
+export const getBookingHistoryController = asyncHandler(async (req, res) => {
+  const clerkUserId = req.auth.userId;
+  const userId = await User.findOne({ clerkUserId });
+
+  if (!userId) {
+    return res.status(401).json({ success: false, message: "User not authenticated" });
+  }
+
+  try {
+    const bookingHistory = await getBookingHistory(userId._id);
+
+    res.status(200).json({
+      success: true,
+      message: "Booking history fetched successfully",
+      data: bookingHistory,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});

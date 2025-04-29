@@ -9,71 +9,73 @@ const SearchResults = ({ activeTab, handleBookNow }) => {
   const { hotels, loading: hotelLoading } = useSelector((state) => state.hotels);
   const { places, status: placeLoading } = useSelector((state) => state.place);
 
-  // Only render the section if there are results or if loading
-  const shouldShow = (flights?.length > 0 || hotels?.length > 0 || places?.length > 0 || 
-                     flightLoading || hotelLoading || placeLoading === 'loading');
+  const LoadingSpinner = () => (
+    <div className="col-span-full flex flex-col items-center justify-center py-8">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      <p className="mt-4 text-gray-600">Searching...</p>
+    </div>
+  );
 
-  if (!shouldShow) return null;
+  const NoResults = ({ type }) => (
+    <div className="col-span-full text-center py-8 text-gray-600">
+      No {type} found. Try different search criteria.
+    </div>
+  );
 
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">Search Results</h2>
-        
-        <div className="max-w-7xl mx-auto">
-          {activeTab === "flights" && (
-            <div className="grid grid-cols-1 gap-4">
-              {flightLoading ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-                  <p className="mt-4 text-gray-600">Searching for flights...</p>
-                </div>
-              ) : flights?.length > 0 ? (
-                <FlightSearchResults flights={flights} />
-              ) : (
-                <div className="text-center py-8 text-gray-600">
-                  No flights found. Try different search criteria.
-                </div>
-              )}
-            </div>
-          )}
+    <div className="bg-white rounded-lg shadow-lg p-6 max-w-7xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6">Search Results</h2>
+      
+      <div className="space-y-8">
+        {activeTab === "flights" && (
+          <div className="grid grid-cols-1 gap-6">
+            {flightLoading ? (
+              <LoadingSpinner />
+            ) : flights?.length > 0 ? (
+              <div className="space-y-4">
+                <FlightSearchResults 
+                  flights={flights}
+                  className="bg-white rounded-lg shadow p-4 hover:shadow-md transition-shadow"
+                />
+              </div>
+            ) : (
+              <NoResults type="flights" />
+            )}
+          </div>
+        )}
 
-          {activeTab === "hotels" && (
-            <div className="grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {hotelLoading ? (
-                <div className="col-span-full w-full text-center py-8">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-                  <p className="mt-4 text-gray-600">Searching for hotels...</p>
-                </div>
-              ) : hotels?.length > 0 ? (
-                <HotelSearchResult hotels={hotels} handleBookNow={handleBookNow} />
-              ) : (
-                <div className="col-span-full text-center py-8 text-gray-600">
-                  No hotels found. Try different search criteria.
-                </div>
-              )}
-            </div>
-          )}
+        {activeTab === "hotels" && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {hotelLoading ? (
+              <LoadingSpinner />
+            ) : hotels?.length > 0 ? (
+              <HotelSearchResult 
+                hotels={hotels} 
+                handleBookNow={handleBookNow}
+                className="h-full"
+              />
+            ) : (
+              <NoResults type="hotels" />
+            )}
+          </div>
+        )}
 
-          {activeTab === "attractions" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {placeLoading === 'loading' ? (
-                <div className="col-span-full text-center py-8">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-                  <p className="mt-4 text-gray-600">Searching for attractions...</p>
-                </div>
-              ) : places?.length > 0 ? (
-                <PlaceSearchResults places={places} />
-              ) : (
-                <div className="col-span-full text-center py-8 text-gray-600">
-                  No attractions found. Try different search criteria.
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+        {activeTab === "attractions" && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {placeLoading === 'loading' ? (
+              <LoadingSpinner />
+            ) : places?.length > 0 ? (
+              <PlaceSearchResults 
+                places={places}
+                className="h-full" 
+              />
+            ) : (
+              <NoResults type="attractions" />
+            )}
+          </div>
+        )}
       </div>
-    </section>
+    </div>
   );
 };
 

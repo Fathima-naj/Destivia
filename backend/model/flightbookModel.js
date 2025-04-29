@@ -34,7 +34,12 @@ const fbookSchema = new mongoose.Schema({
       type: String,
       enum: ["paid", "failed", "pending", "captured", "refunded"],
       default: "pending"
-    }
+    },
+    bookingStatus: {
+    type: String,
+    enum: ["booked", "not-booked"], // You can extend this as needed
+    default: "not-booked" // Initial status before confirmation
+  }
   }, { timestamps: true });
   
 

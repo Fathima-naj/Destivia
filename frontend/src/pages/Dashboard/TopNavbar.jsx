@@ -35,12 +35,10 @@ const TopNavbar = () => {
 
         {/* Message and Video Icons */}
         <button className="text-gray-600 cursor-pointer hover:text-blue-600">
-          <MessageCircle className="w-6 h-6" />
+          <Link to='chat'><MessageCircle className="w-6 h-6" /></Link>
         </button>
 
-        <button className="text-gray-600 cursor-pointer hover:text-blue-600">
-          <Video className="w-6 h-6" />
-        </button>
+        
 
         {/* User Dropdown or Sign In Button */}
         {user ? (

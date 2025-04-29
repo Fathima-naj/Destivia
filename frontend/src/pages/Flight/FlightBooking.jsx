@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useAuth } from "@clerk/clerk-react";
 import { useDispatch, useSelector } from "react-redux";
-import { createBookingOrder } from "../../slice/bookingSlice";
+import { createBookingOrder ,clearBookingState} from "../../slice/bookingSlice";
 import axiosInstance from "../../api/axiosInstance";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -20,8 +20,20 @@ const FlightBookingForm = () => {
   const flightData=flight
   console.log("flightData",flightData)
   const { loading, error, order } = useSelector((state) => state.booking);
+   useEffect(() => {
+          if (!flightData) {
+            toast.error("No place details found");
+            navigate('/places');
+            return;
+          }
+        }, [flightData, navigate]);
+        useEffect(() => {
+            dispatch(clearBookingState());
+            return () => dispatch(clearBookingState());
+          }, [dispatch]);
+
   const numericPrice = parseFloat(flightData.price?.toString().replace(/[^\d.]/g, "")) || 0;
-  const totalPrice = (numericPrice * passengers*85.38).toFixed(2); 
+  const totalPrice = (numericPrice * passengers*85).toFixed(2); 
    const initialValues = {
     name: "",
     email: "",
@@ -37,8 +49,13 @@ const FlightBookingForm = () => {
       .required("Contact is required"),
   });
 
-  const handleBooking = async (values) => {
-    const token = await getToken();
+  const handleBooking = async (values,{setSubmitting}) => {
+    try{
+      const token = await getToken();
+       if (!token) {
+                  toast.error("Authentication required");
+                  return;
+                }
     console.log("auth token",await token)
     const bookingData = {
      
@@ -64,7 +81,13 @@ const FlightBookingForm = () => {
     };
     console.log('from flight bookingData',bookingData);
     
-    dispatch(createBookingOrder({ type: "flight", bookingData, token }));
+   await dispatch(createBookingOrder({ type: "flight", bookingData, token }));
+    } catch (error) {
+             console.error("Booking creation failed:", error);
+             toast.error(error.message || "Failed to create booking");
+           } finally {
+             setSubmitting(false);
+           }
   };
 
   
@@ -78,8 +101,8 @@ const FlightBookingForm = () => {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: order.amount,
         currency: "INR",
-        name: "Travel Booking",
-        description: "FLight Booking Payment",
+        name: "Destivia Travel",
+        description: `Booking for ${flight.airline} flight`,
         order_id: order.orderId,
         handler: async function (response) {
           try {
@@ -100,6 +123,7 @@ const FlightBookingForm = () => {
               }
             );
             toast.success("Payment successful 🎉");
+             dispatch(clearBookingState());
              navigate('/flight')
           } catch (err) {
             console.error("Payment verification failed:", err);
@@ -125,9 +149,10 @@ const FlightBookingForm = () => {
   }, [order]);
 
   return (
-    <div className="fixed inset-0  bg-opacity-30 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded shadow-md w-full max-w-md relative">
-        <h2 className="text-xl font-bold mb-4">Confirm Flight Booking</h2>
+    <div className="flex-1 flex items-center justify-center p-4">
+    <div className="w-full max-w-md bg-white rounded-lg shadow-xl">
+      <div className="p-6">
+        <h2 className="text-2xl font-bold mb-6 text-center">Confirm Flight Booking</h2>
 
         <Formik
           initialValues={initialValues}
@@ -173,6 +198,7 @@ const FlightBookingForm = () => {
           </Form>
         </Formik>
       </div>
+    </div>
     </div>
   );
 };

@@ -83,13 +83,13 @@ const HotelInput = ({
                   <span className="text-gray-700">Adults</span>
                   <div className="flex items-center space-x-2">
                     <button
-                      className="bg-red-500 text-white px-2 rounded disabled:opacity-50"
+                      className="bg-orange-500 text-white px-2 rounded disabled:opacity-50"
                       disabled={adults <= 1}
                       onClick={() => setAdults(adults - 1)}
                     >-</button>
                     <span>{adults}</span>
                     <button
-                      className="bg-indigo-500 text-white px-2 rounded"
+                      className="bg-yellow-500 text-white px-2 rounded"
                       onClick={() => setAdults(adults + 1)}
                     >+</button>
                   </div>
@@ -99,13 +99,13 @@ const HotelInput = ({
                   <span className="text-gray-700">Children</span>
                   <div className="flex items-center space-x-2">
                     <button
-                      className="bg-red-500 text-white px-2 rounded disabled:opacity-50"
+                      className="bg-orange-500 text-white px-2 rounded disabled:opacity-50"
                       disabled={children <= 0}
                       onClick={() => setChildren(children - 1)}
                     >-</button>
                     <span>{children}</span>
                     <button
-                      className="bg-indigo-500 text-white px-2 rounded"
+                      className="bg-yellow-500 text-white px-2 rounded"
                       onClick={() => setChildren(children + 1)}
                     >+</button>
                   </div>
@@ -117,7 +117,7 @@ const HotelInput = ({
                       setGuests(adults + children);
                       setDropdown(false);
                     }}
-                    className="text-indigo-600 hover:underline"
+                    className="text-yellow-600 hover:underline"
                   >
                     Done
                   </button>
@@ -130,7 +130,7 @@ const HotelInput = ({
           <div className="flex items-end">
             <button
               onClick={handleSearch}
-              className="w-full bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition shadow-md"
+              className="w-full bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 transition shadow-md"
             >
               Search
             </button>

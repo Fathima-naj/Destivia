@@ -49,7 +49,7 @@ const PopularFlightSuggestions = () => {
 
             <div className="flex justify-between items-center">
               <p className="text-green-600 font-bold text-lg">
-                ${(parseFloat(flight.price) * parseInt(flight.passengers))*85.38}
+                ${(parseFloat(flight.price) * parseInt(flight.passengers))*85}
               </p>
               <button 
               onClick={() => navigate('/f-booking',{state:{

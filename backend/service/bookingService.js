@@ -106,6 +106,44 @@ if (room) {
         message: "Flight booking deleted and seat count updated",
       };
     }
+    if (type === "place") {
+      const booking = await Pbook.findOne({
+        _id: new mongoose.Types.ObjectId(bookingId),
+        user: new mongoose.Types.ObjectId(userId),
+      });
+
+      if (!booking) {
+        return { success: false, message: "Place booking not found" };
+      }
+
+      const placeId = booking.place.placeId;
+      const persons = booking.persons;
+
+      const place = await Place.findById(placeId);
+      if (!place) {
+        return { success: false, message: "Place not found" };
+      }
+
+      // Decrease ticket count in the place model
+      place.tickets += persons;
+
+      await place.save();
+
+      const deletedBooking = await Pbook.findOneAndDelete({
+        _id: new mongoose.Types.ObjectId(bookingId),
+        user: new mongoose.Types.ObjectId(userId),
+      });
+
+      if (!deletedBooking) {
+        return { success: true, message: "Booking already deleted" };
+      }
+
+      return {
+        success: true,
+        message: "Place booking deleted and ticket count updated",
+      };
+    }
+
 
     return { success: false, message: "Invalid booking type" };
   } catch (error) {

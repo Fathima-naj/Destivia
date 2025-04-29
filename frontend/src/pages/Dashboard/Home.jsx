@@ -23,20 +23,26 @@ const Home = () => {
 
   return (
     <DashboardLayout>
-      <HeroSection />
-      
-      {showResults && (
-        <SearchResults 
-          activeTab={activeTab}
-          handleBookNow={(hotel) => {
-            navigate(`/hotels/${hotel.hotelId}`);
-          }}
-        />
-      )}
-      
-      <WhyChooseUs />
-      <PopularDestinations />
-      <Footer />
+      <div className="min-h-screen bg-gray-50">
+        <HeroSection />
+        
+        {showResults && (
+          <div className="container mx-auto px-4 py-12">
+            <SearchResults 
+              activeTab={activeTab}
+              handleBookNow={(hotel) => {
+                navigate(`/hotels/${hotel.hotelId}`);
+              }}
+            />
+          </div>
+        )}
+        
+        <div className="mt-12">
+          <WhyChooseUs />
+          <PopularDestinations />
+          <Footer />
+        </div>
+      </div>
     </DashboardLayout>
   );
 };

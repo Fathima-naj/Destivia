@@ -1,16 +1,32 @@
-import React, { useState } from "react";
-import FlightBookingForm from "./FlightBooking";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const FlightSearchResults = ({ flights, loading, error, passengers, showBookingForm, setShowBookingForm }) => {
-  const [bookedFlights, setBookedFlights] = useState(new Set()); 
+const FlightSearchResults = ({ flights, loading, error, passengers }) => {
+  const navigate = useNavigate();
+
+  const [bookedFlights, setBookedFlights] = useState(new Set());
+
+  useEffect(() => {
+    const storedBookedFlights = localStorage.getItem("bookedFlights");
+    const bookedFlightsArray = storedBookedFlights ? JSON.parse(storedBookedFlights) : [];
+    
+    setBookedFlights(new Set(bookedFlightsArray));
+    console.log("Stored Booked Flights:", bookedFlightsArray);
+  }, []);
+
   const handleBooking = (flightId) => {
-    setBookedFlights((prevBookedFlights) => new Set(prevBookedFlights).add(flightId));
+    setBookedFlights((prevBookedFlights) => {
+      const updatedBookedFlights = new Set(prevBookedFlights);
+      updatedBookedFlights.add(flightId); 
+      localStorage.setItem("bookedFlights", JSON.stringify(Array.from(updatedBookedFlights)));
+
+      return updatedBookedFlights;
+    });
   };
-const navigate=useNavigate()
+
   return (
     <div className="max-w-5xl mx-auto mt-8 space-y-6">
-      {loading && <p className="text-blue-500"> Loading flights...</p>}
+      {loading && <p className="text-blue-500">Loading flights...</p>}
       {error && <p className="text-red-500">{error.error || "Something went wrong"}</p>}
 
       {flights.length === 0 ? (
@@ -46,32 +62,32 @@ const navigate=useNavigate()
             <div className="text-right space-y-1 w-full sm:w-1/3 mt-4 sm:mt-0">
               <p className="text-sm text-gray-600">Passengers: {flight.passengers}</p>
               <p className="text-green-600 font-bold text-xl">
-                ₹ {(parseFloat(flight.price) * parseInt(flight.passengers))*85.38}
+                ₹ {((parseFloat(flight.price) * parseInt(flight.passengers)) * 85)}
               </p>
 
-              {bookedFlights.has(flight.id) ? (
+              {bookedFlights.has(flight._id) ? (  
                 <button  
-                disabled
-                className="bg-gray-400 text-white px-6 py-2 rounded-lg shadow-md text-sm md:text-base cursor-not-allowed"
+                  disabled
+                  className="bg-yellow-700/50 text-white px-6 py-2 rounded-lg shadow-md text-sm md:text-base cursor-not-allowed"
                 >
-                  ✅ Booked
+                   Booked
                 </button>
               ) : (
                 <button
-                  onClick={() => 
-                    navigate('/f-booking',{state:{
-                      flight:flight,
-                      passengers:passengers
-                    }})
-                    
-                  }
-                   className="bg-green-600 cursor-pointer hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow-md text-sm md:text-base transition duration-200"
+                  onClick={() => {
+                    handleBooking(flight._id); 
+                    navigate("/f-booking", {
+                      state: {
+                        flight: flight,
+                        passengers: passengers,
+                      },
+                    });
+                  }}
+                  className="bg-yellow-600 cursor-pointer hover:bg-yellow-700 text-white px-6 py-2 rounded-lg shadow-md text-sm md:text-base transition duration-200"
                 >
                   Book Now
                 </button>
               )}
-
-             
             </div>
           </div>
         ))

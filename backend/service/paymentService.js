@@ -292,6 +292,47 @@ if (type === "flight") {
 };
 
 
+// export const verifyRazorpayPaymentAndConfirmBooking = async ({
+//   razorpayPaymentId,
+//   razorpayOrderId,
+//   razorpaySignature,
+// }) => {
+//   try {
+//     const generatedSignature = crypto
+//       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+//       .update(`${razorpayOrderId}|${razorpayPaymentId}`)
+//       .digest("hex");
+
+//     if (generatedSignature !== razorpaySignature) {
+//       throw new Error("Payment signature verification failed");
+//     }
+
+//     let booking = null;
+//     for (let type in modelMap) {
+//       booking = await modelMap[type].findOne({ razorpayOrderId });
+//       if (booking) break;
+//     }
+
+//     if (!booking) {
+//       throw new Error("Booking not found for the given order ID");
+//     }
+
+//     booking.razorpayPaymentId = razorpayPaymentId;
+//     booking.razorpayPaymentStatus = "paid";
+//     booking.status = "completed";
+//     await booking.save();
+
+//     return {
+//       success: true,
+//       message: "Payment verified and booking confirmed",
+//       bookingId: booking._id,
+//     };
+//   } catch (error) {
+//     console.error("Payment verification error:", error);
+//     throw new Error("Payment verification failed");
+//   }
+// };
+
 export const verifyRazorpayPaymentAndConfirmBooking = async ({
   razorpayPaymentId,
   razorpayOrderId,
@@ -319,7 +360,8 @@ export const verifyRazorpayPaymentAndConfirmBooking = async ({
 
     booking.razorpayPaymentId = razorpayPaymentId;
     booking.razorpayPaymentStatus = "paid";
-    booking.status = "completed";
+    booking.status = "completed"; // updated
+    booking.bookingStatus = "booked"; // newly added field
     await booking.save();
 
     return {
@@ -330,5 +372,26 @@ export const verifyRazorpayPaymentAndConfirmBooking = async ({
   } catch (error) {
     console.error("Payment verification error:", error);
     throw new Error("Payment verification failed");
+  }
+};
+
+export const getBookingHistory = async (userId) => {
+  try {
+    // Fetch hotel bookings
+    const hotelBookings = await Hbook.find({ user: userId }).populate("hotel.hotelId");
+
+    // Fetch flight bookings
+    const flightBookings = await Fbook.find({ user: userId }).populate("flight.flightId");
+
+    // Fetch place bookings
+    const placeBookings = await Pbook.find({ user: userId }).populate("place.placeId");
+
+    return {
+      hotelBookings,
+      flightBookings,
+      placeBookings,
+    };
+  } catch (error) {
+    throw new Error("Failed to fetch booking history: " + error.message);
   }
 };

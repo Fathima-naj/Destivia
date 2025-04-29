@@ -134,7 +134,7 @@ const FlightSearchForm = ({
 
       <button
         onClick={handleSearch}
-        className="bg-yellow-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition"
+        className="bg-yellow-600 text-white px-5 py-2 rounded-md hover:bg-yellow-700 transition"
       >
         Search
       </button>

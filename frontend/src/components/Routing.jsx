@@ -22,6 +22,7 @@ import UserProfile from "../pages/profile/UserProfile";
 import HotelBookingForm from "../pages/Hotel/HotelBookingForm";
 import FlightBookingForm from "../pages/Flight/FlightBooking";
 import PlaceBookingForm from "../pages/Place/PlaceBookingForm";
+import PublicChat from "../chat/PublicChat";
 
 function Routing() {
   return (
@@ -30,7 +31,7 @@ function Routing() {
       <Route path="/sign-up/*" element={<SignUpPage />} />
       <Route path="/sign-in/*" element={<Login />} />
 
-      {/* Home route without layout */}
+      {/* Home route */}
       <Route
         path="/"
         element={
@@ -47,7 +48,6 @@ function Routing() {
 
       {/* All other routes with MainLayout */}
       <Route
-        path="/"
         element={
           <SignedIn>
             <MainLayout />
@@ -63,8 +63,9 @@ function Routing() {
         <Route path="placecard" element={<PlaceCard />} />
         <Route path="place/:fsq_id" element={<PlaceDetails />} />
         <Route path="profile" element={<UserProfile />} />
-        <Route path="/f-booking" element={<FlightBookingForm/>}/>
-        <Route path="/p-booking" element={<PlaceBookingForm/>}/>
+        <Route path="f-booking" element={<FlightBookingForm/>}/>
+        <Route path="p-booking" element={<PlaceBookingForm/>}/>
+        <Route path="chat" element={<PublicChat/>}/>
       </Route>
 
       {/* Fallback */}
